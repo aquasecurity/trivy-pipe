@@ -2,15 +2,6 @@
 
 > [Bitbucket Pipeline](https://bitbucket.org/product/features/pipelines/) for [Trivy](https://github.com/aquasecurity/trivy)
 
-
-## Table of Contents
-
-- [Usage](#usage)
-  - [Workflow](#workflow)
-  - [Git Repository Scanning](#using-trivy-to-scan-your-git-repo)
-- [Customizing](#customizing)
-  - [Inputs](#inputs)
-
 ## Usage
 
 ### Workflow
