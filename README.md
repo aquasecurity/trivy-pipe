@@ -66,25 +66,23 @@ pipelines:
 It's also possible to scan your IaC repos with Trivy's built-in repo scan. This can be handy if you want to run Trivy as a build time check on each PR that gets opened in your repo. This helps you identify potential vulnerablites that might get introduced with each PR.
 
 ```yaml
-image: 
-    name: atlassian/default-image:2
+image:
+  name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          scanType: 'config'
-          hideProgress: false
-          format: 'table'
-          exitCode: '1'
-          ignoreUnfixed: true
-          severity: 'CRITICAL,HIGH'
-  
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
+  default:
+    - step:
+        services:
+          - docker
+        script:
+          - pipe: aquasec/trivy-pipe:latest
+            variables:
+              scanType: "config"
+              hideProgress: "false"
+              format: "table"
+              exitCode: 1
+              ignoreUnfixed: "true"
+              severity: "CRITICAL,HIGH"
 ```
 
 ### Using Trivy to scan your private registry
@@ -94,25 +92,23 @@ It's also possible to scan your private registry with Trivy's built-in image sca
 Docker Hub needs `TRIVY_USERNAME` and `TRIVY_PASSWORD`.
 You don't need to set ENV vars when downloading from a public repository.
 ```yaml
-image: 
-    name: atlassian/default-image:2
+image:
+  name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          TRIVY_USERNAME: Username
-          TRIVY_PASSWORD: Password   
-  
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
+  default:
+    - step:
+        services:
+          - docker
+        script:
+          - pipe: aquasec/trivy-pipe:latest
+            variables:
+              imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
+              format: 'template'
+              template: '@/contrib/sarif.tpl'
+              output: 'trivy-results.sarif'
+              TRIVY_USERNAME: Username
+              TRIVY_PASSWORD: Password  
 ```
 
 #### AWS ECR (Elastic Container Registry)
@@ -124,23 +120,22 @@ You can use [AWS CLI's ENV Vars][env-var].
 image: 
     name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          imageRef: 'aws_account_id.dkr.ecr.region.amazonaws.com/imageName:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          AWS_ACCESS_KEY_ID: key_id
-          AWS_SECRET_ACCESS_KEY: access_key
-          AWS_DEFAULT_REGION: us-west-2
-  
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
+  default:
+    - step:
+        services:
+          - docker
+        script:
+          - pipe: aquasec/trivy-pipe:latest
+            variables:
+              imageRef: 'aws_account_id.dkr.ecr.region.amazonaws.com/imageName:${{ github.sha }}'
+              format: 'template'
+              template: '@/contrib/sarif.tpl'
+              output: 'trivy-results.sarif'
+              AWS_ACCESS_KEY_ID: key_id
+              AWS_SECRET_ACCESS_KEY: access_key
+              AWS_DEFAULT_REGION: us-west-2
+
 ```
 
 #### GCR (Google Container Registry)
@@ -151,22 +146,19 @@ If you want to use target project's repository, you can set it via `GOOGLE_APPLI
 image: 
     name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          GOOGLE_APPLICATION_CREDENTIAL: /path/to/credential.json
-  
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
-
+  default:
+    - step:
+        services:
+          - docker
+        script:
+          - pipe: aquasec/trivy-pipe:latest
+            variables:
+              imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
+              format: 'template'
+              template: '@/contrib/sarif.tpl'
+              output: 'trivy-results.sarif'
+              GOOGLE_APPLICATION_CREDENTIAL: /path/to/credential.json
 ```
 
 #### Self-Hosted
@@ -176,22 +168,20 @@ if you want to use 80 port, use NonSSL `TRIVY_NON_SSL=true`
 image: 
     name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          TRIVY_USERNAME: Username
-          TRIVY_PASSWORD: Password   
-  
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
+  default:
+    - step:
+        services:
+          - docker
+        script:
+          - pipe: aquasec/trivy-pipe:latest
+            variables:
+              imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
+              format: 'template'
+              template: '@/contrib/sarif.tpl'
+              output: 'trivy-results.sarif'
+              TRIVY_USERNAME: Username
+              TRIVY_PASSWORD: Password   
 ```
 
 ## Customizing
@@ -205,7 +195,7 @@ Following inputs can be used as `step.with` keys:
 | `scanType`      | String  | `image`                            | Scan type, e.g. `image` or `fs`|
 | `input`          | String  |                                    | Tar reference, e.g. `alpine-latest.tar` |
 | `imageRef`      | String  |                                    | Image reference, e.g. `alpine:3.10.2`         |
-| `scanRef`       | String  | `/github/workspace/`               | Scan reference, e.g. `/github/workspace/` or `.`|
+| `scanRef`       | String  |                                       | Scan reference, e.g. `.`|
 | `format`         | String  | `table`                            | Output format (`table`, `json`, `template`)   |
 | `template`       | String  |                                    | Output template (`@/contrib/sarif.tpl`, `@/contrib/gitlab.tpl`, `@/contrib/junit.tpl`)|
 | `output`         | String  |                                    | Save results to a file                        |
