@@ -10,22 +10,20 @@
 image: 
     name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
-          format: 'table'
-          exitCode: '1'
-          ignoreUnfixed: true
-          vulnType: 'os,library'
-          severity: 'CRITICAL,HIGH'
-  
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
+  default:
+    - step:
+        service:
+          docker
+        script:
+        - pipe: aquasecurity/trivy-pipe:latest
+          variables:
+            imageRef: 'docker.io/my-organization/my-app:${{ github.sha }}'
+            format: 'table'
+            exitCode: '1'
+            ignoreUnfixed: true
+            vulnType: 'os,library'
+            severity: 'CRITICAL,HIGH'
 ```
 
 ### Using Trivy to scan your Git repo
@@ -35,22 +33,20 @@ It's also possible to scan your git repos with Trivy's built-in repo scan. This 
 image: 
     name: atlassian/default-image:2
 
-trivy-scan: &trivy-scan
-  step:
-    scripts:
-      - pipe: aquasecurity/trivy-pipe:latest
-        variables:
-          scanType: 'fs'
-          ignoreUnfixed: true
-          format: 'template'
-          template: '@/contrib/sarif.tpl'
-          output: 'trivy-results.sarif'
-          severity: 'CRITICAL'
-
 pipelines:
-  branches:
-    master:
-      - <<: *trivy-scan
+  default:
+    - step:
+        service:
+          docker
+        script:
+          - pipe: aquasecurity/trivy-pipe:latest
+            variables:
+              scanType: 'fs'
+              ignoreUnfixed: true
+              format: 'template'
+              template: '@/contrib/sarif.tpl'
+              output: 'trivy-results.sarif'
+              severity: 'CRITICAL'
 ```
 
 ### Using Trivy to scan Infrastucture as Code
