@@ -1,0 +1,91 @@
+name: Aqua Security Trivy
+description: Scans container images for vulnerabilities with Trivy
+
+image: aquasec/trivy-pipe:latest
+category: Security
+
+variables:
+  - name: scanType
+    description: 'Scan type to use for scanning vulnerability'
+    required: false
+    default: 'image'
+  - name: imageRef
+    description: 'image reference(for backward compatibility)'
+    required: true
+  - name: input
+    description: 'reference of tar file to scan'
+    required: false
+    default: ''
+  - name: scanRef
+    description: 'Scan reference'
+    required: false
+    default: '.'
+  - name: exitCode
+    description: 'exit code when vulnerabilities were found'
+    required: false
+    default: '0'
+  - name: ignoreUnfixed
+    description: 'ignore unfixed vulnerabilities'
+    required: false
+    default: 'false'
+  - name: vulnType
+    description: 'comma-separated list of vulnerability types (os,library)'
+    required: false
+    default: 'os,library'
+  - name: severity
+    description: 'severities of vulnerabilities to be displayed'
+    required: false
+    default: 'UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL'
+  - name: format
+    description: 'output format (table, json, template)'
+    required: false
+    default: 'table'
+  - name: template
+    description: 'use an existing template for rendering output (@/contrib/sarif.tpl, @/contrib/gitlab.tpl, @/contrib/junit.tpl'
+    required: false
+    default: ''
+  - name: output
+    description: 'writes results to a file with the specified file name'
+    required: false
+    default: ''
+  - name: skipDirs
+    description: 'comma separated list of directories where traversal is skipped'
+    required: false
+    default: ''
+  - name: cacheDir
+    description: 'specify where the cache is stored'
+    required: false
+    default: ''
+  - name: timeout
+    description: 'timeout (default 5m0s)'
+    required: false
+    default: ''
+  - name: ignorePolicy
+    description: 'filter vulnerabilities with OPA rego language'
+    required: false
+    default: ''
+  - name: hide-progress
+    description: 'hide progress output'
+    required: false
+    default: true
+
+respository: https://github.com/aquasecurity/trivy-pipe
+maintainer: 
+  name: Aquasecurity
+  website: https://www.aquasecurity.com
+  email: contact@aquasec.com
+
+vendor:
+  name: Aquasecurity
+  website: https://www.aquasecurity.com
+  email: contact@aquasec.com
+
+tags:
+  - trivy
+  - code-scanning
+  - security
+  - cloud-security
+  - kubernetes
+  - iac
+  - bitbucket
+  - bitbucket-pipes

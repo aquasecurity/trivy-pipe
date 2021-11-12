@@ -1,0 +1,33 @@
+name: deploy pipe
+
+on:
+  push:
+    tags:
+      - v*
+    branch:
+      - main
+
+jobs:
+  build:
+    name: Build and deploy Pipe
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Login to docker.io registry
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USER }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    - name: Build image and push to Docker Hub 
+      uses: docker/build-push-action@v2
+      with:
+        context: .
+        tags: |
+          aquasec/trivy-pipe:latest 
+          aquasec/trivy-pipe:${{github.ref_name}}
+        push: true
