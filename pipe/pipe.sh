@@ -5,7 +5,11 @@ set -e
 scanType=$(echo $scanType | tr -d '\r')
 export artifactRef="${imageRef}"
 if [ "${scanType}" = "fs" ] ||  [ "${scanType}" = "config" ];then
-  artifactRef=$BITBUCKET_CLONE_DIR
+  if [ $scanRef ]; then
+    artifactRef=$BITBUCKET_CLONE_DIR/scanRef
+  else
+    artifactRef=$BITBUCKET_CLONE_DIR
+  fi
 fi
 input=$(echo $input | tr -d '\r')
 if [ $input ]; then
