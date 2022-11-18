@@ -128,7 +128,7 @@ pipelines:
 #### GCR (Google Container Registry)
 Trivy uses Google Cloud SDK. You don't need to install `gcloud` command.
 
-If you want to use target project's repository, you can set it via `GOOGLE_APPLICATION_CREDENTIAL`.
+If you want to use target project's repository, you can set it via `GOOGLE_APPLICATION_CREDENTIALS`.
 ```yaml
 image: 
     name: atlassian/default-image:2
@@ -145,7 +145,7 @@ pipelines:
               format: 'template'
               template: '@/contrib/sarif.tpl'
               output: 'trivy-results.sarif'
-              GOOGLE_APPLICATION_CREDENTIAL: /path/to/credential.json
+              GOOGLE_APPLICATION_CREDENTIALS: /path/to/credential.json
 ```
 
 #### Self-Hosted
